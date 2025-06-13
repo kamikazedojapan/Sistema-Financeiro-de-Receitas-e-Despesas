@@ -10,50 +10,67 @@ import plotly.express as px
 import numpy as np
 import pandas as pd
 
-
-
-
-
-
 # ========= Layout ========= #
-layout = dbc.Col([
-    html.H1("Home Page", className="text-primary"),
-    html.Hr(),
+layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            html.H1("Home Page", className="text-primary text-center"),
+            html.Hr(),
 
-    # Seção PERFIL----------------
-    dbc.Button(
-        id='botao_avatar',
-        children=[
+            # ====== Avatar ====== #
             html.Img(
                 src='/assets/img_hom.png',
                 id="avatar_change",
                 alt='Avatar',
-                className='perfil_name',
+                className='perfil_avatar',
                 style={
-                    'width': '200px',           # tamanho opcional
+                    'width': '200px',
                     'height': 'auto',
-                    'border-radius': '50%',     # se quiser arredondar a imagem
-                    'object-fit': 'cover'
+                    'border-radius': '50%',
+                    'object-fit': 'cover',
+                    'display': 'block',
+                    'margin': '0 auto'
                 }
-            )
-        ],
-        style={
-            'position': 'absolute',
-            'top': '100px',
-            'left': '40px',
-            'background-color': 'transparent',
-            'border': 'none',
-            'padding': '0'
-        }
-    )
-], style={
-    'position': 'relative',
-    'height': '100vh',
-    'padding': '20px'
-})
+            ),
 
+            html.Br(),
 
+            # ====== Botões Receita e Despesa ====== #
+            dbc.Row([
+                dbc.Col(
+                    dbc.Button(
+                        "+ Receita",
+                        color='success',
+                        id='open-novo-receita',
+                        className='w-100'
+                    ),
+                    width=6
+                ),
+                dbc.Col(
+                    dbc.Button(
+                        "- Despesa",
+                        color='danger',
+                        id='open-novo-despesa',
+                        className='w-100'
+                    ),
+                    width=6
+                )
+            ], justify='center'),
 
+            html.Br(),
 
-# =========  Callbacks  =========== #
-# Pop-up receita
+            # ====== Navbar (Dashboard e Extratos) ====== #
+            html.Hr(),
+            dbc.Nav(
+                [
+                    dbc.NavLink("Dashboard", href="/dashboards", active="exact"),
+                    dbc.NavLink("Extratos", href="/extratos", active="exact"),
+                ],
+                vertical=True,
+                pills=True,
+                id='nav_buttons',
+                style={'margin-bottom': "50px"})
+
+        ], width=12)
+    ])
+], fluid=True, id='sidebar_completa')
