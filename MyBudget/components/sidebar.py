@@ -44,7 +44,8 @@ layout = dbc.Container([
                         id='open-novo-receita',
                         className='w-100'
                     ),
-                    width=6
+                    width=6,
+                    class_name='pe-3'
                 ),
                 dbc.Col(
                     dbc.Button(
@@ -53,7 +54,8 @@ layout = dbc.Container([
                         id='open-novo-despesa',
                         className='w-100'
                     ),
-                    width=6
+                    width=6,
+                    class_name='ps-3'
                 )
             ], justify='center'),
 
