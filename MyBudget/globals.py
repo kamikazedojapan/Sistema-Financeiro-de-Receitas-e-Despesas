@@ -30,8 +30,8 @@ else:
     df_despesas.to_csv("df_despesas.csv", index=False)
 
 # Carrega ou cria os DataFrames de categorias
-if ("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesas.csv" in os.listdir()):
-    df_cat_receita = pd.read_csv("df_cat_receita.csv", index_col=0)
+if ("df_cat_receitas.csv" in os.listdir()) and ("df_cat_despesas.csv" in os.listdir()):
+    df_cat_receita = pd.read_csv("df_cat_receitas.csv", index_col=0)
     df_cat_despesa = pd.read_csv("df_cat_despesas.csv", index_col=0)
     cat_receita = df_cat_receita.values.tolist()
     cat_despesa = df_cat_despesa.values.tolist()
