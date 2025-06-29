@@ -124,7 +124,7 @@ layout = dbc.Container([
                                         html.Legend('Excluir categorias', style={'color': 'red'}),
                                         dbc.Checklist(
                                             id='checklist-selected-style-receita',  # Corrigido o nome
-                                            options=[],
+                                            options=[{"label": i, "value": i} for i in cat_receita],
                                             value=[],
                                             label_checked_style={'color': 'red'},
                                             input_checked_style={'backgroundColor': 'blue', 'borderColor': 'orange'},
@@ -211,7 +211,7 @@ layout = dbc.Container([
                                         html.Legend('Excluir categorias', style={'color': 'red'}),
                                         dbc.Checklist(
                                             id='checklist-selected-style-despesa',
-                                            options=[],
+                                            options=[{"label": i, "value": i} for i in cat_despesa],
                                             value=[],
                                             label_checked_style={'color': 'red'},
                                             input_checked_style={'backgroundColor': 'blue', 'borderColor': 'orange'},
@@ -370,3 +370,54 @@ def salve_form_despesa(n, descricao, valor, date, switches, categoria, dict_desp
         df_despesas.to_csv("df_despesas.csv", index=False)
 
     return df_despesas.to_dict()
+
+@app.callback(
+    [Output("select_receita", "options"),
+     Output('checklist-selected-style-receita', 'options'),
+     Output('checklist-selected-style-receita', 'value'),
+     Output('stored-cat-receitas', 'data')],
+    [Input("add-category-receita", "n_clicks"),
+     Input('remove-category-receita', "n_clicks")],
+    [State("input-add-receita", "value"),
+     State("checklist-selected-style-receita", 'value'),
+     State('stored-cat-receitas', 'data')]
+)
+def update_categoria_receita(n_add, n_remove, nova_categoria, categorias_remover, data_atual):
+    cat_receita = list(data_atual["Categoria"].values())
+
+    if n_add and nova_categoria and nova_categoria not in cat_receita:
+        cat_receita.append(nova_categoria)
+
+    if n_remove and categorias_remover:
+        cat_receita = [i for i in cat_receita if i not in categorias_remover]
+
+    opcoes = [{"label": i, "value": i} for i in cat_receita]
+    df_cat_receita = pd.DataFrame(cat_receita, columns=["Categoria"])
+    df_cat_receita.to_csv("df_cat_receita.csv", index=False)
+    return opcoes, opcoes, [], df_cat_receita.to_dict()
+
+@app.callback(
+    [Output("select_despesa", "options"),
+     Output('checklist-selected-style-despesa', 'options'),
+     Output('checklist-selected-style-despesa', 'value'),
+     Output('stored-cat-despesas', 'data')],
+    [Input("add-category-despesa", "n_clicks"),
+     Input('remove-category-despesa', "n_clicks")],
+    [State("input-add-despesa", "value"),
+     State("checklist-selected-style-despesa", 'value'),
+     State('stored-cat-despesas', 'data')]
+)
+def update_categoria_despesa(n_add, n_remove, nova_categoria, categorias_remover, data_atual):
+    cat_despesa = list(data_atual["Categoria"].values())
+
+    if n_add and nova_categoria and nova_categoria not in cat_despesa:
+        cat_despesa.append(nova_categoria)
+
+    if n_remove and categorias_remover:
+        cat_despesa = [i for i in cat_despesa if i not in categorias_remover]
+
+    opcoes = [{"label": i, "value": i} for i in cat_despesa]
+    df_cat_despesa = pd.DataFrame(cat_despesa, columns=["Categoria"])
+    df_cat_despesa.to_csv("df_cat_despesa.csv", index=False)
+    return opcoes, opcoes, [], df_cat_despesa.to_dict()
+
