@@ -125,6 +125,7 @@ layout = dbc.Col([
     Output("dropdown-receita", "value"),
     Output("p-receita-dashboards", "children"),
     Input("store-receitas", "data"))
+
 def populate_dropdownvalues(data):
     df = pd.DataFrame(data)
     valor = df['Valor'].sum()
@@ -139,24 +140,27 @@ def populate_dropdownvalues(data):
     Output("dropdown-despesa", "value"),
     Output("p-despesa-dashboards", "children"),
     Input("store-despesas", "data"))
+    
 def populate_dropdownvalues(data):
     df = pd.DataFrame(data)
     valor = df['Valor'].sum()
+    valor = round(valor, 2)  # Arredonda para duas casas
     val = df.Categoria.unique().tolist()
 
-    [{"label": x, "value": x} for x in val]
+    return ([{"label": x, "value": x} for x in val], val, f"R$ {valor:.2f}")
 
-    return ([{"label": x, "value": x} for x in val], val, f"R$ {valor}")
 
 @app.callback(
     Output("p-saldo-dashboards", "children"),
     [Input("store-despesas", "data"),
      Input("store-receitas", "data")])
+
 def saldo_total(despesas, receitas):
     df_despesas = pd.DataFrame(despesas)
     df_receitas = pd.DataFrame(receitas)
 
     valor = df_receitas['Valor'].sum() - df_despesas['Valor'].sum()
+    valor = round(valor, 2)
 
     return f"R$ {valor}"
 
@@ -167,6 +171,7 @@ def saldo_total(despesas, receitas):
      Input('dropdown-receita', 'value'),
      Input('dropdown-despesa', 'value')]
 )
+
 def update_output(data_receita, data_despesa, receita, despesa):
     
     df_despesas = pd.DataFrame(data_despesa).set_index("Data")[["Valor"]]
@@ -195,6 +200,7 @@ def update_output(data_receita, data_despesa, receita, despesa):
      Input('date-picker-config', 'start_date'),
      Input('date-picker-config', 'end_date'), ]
 )
+
 def graph2_show(data_receita, data_despesa, receita, despesa, start_date, end_date):
     df_ds = pd.DataFrame(data_despesa)
     df_rc = pd.DataFrame(data_receita)
@@ -220,6 +226,7 @@ def graph2_show(data_receita, data_despesa, receita, despesa, start_date, end_da
     [Input('store-receitas', 'data'),
      Input('dropdown-receita', 'value')]
 )
+
 def pie_receita(data_receita, receita):
     df = pd.DataFrame(data_receita)
 
@@ -243,6 +250,7 @@ def pie_receita(data_receita, receita):
     [Input('store-despesas', 'data'),
      Input('dropdown-despesa', 'value')]
 )
+
 def pie_despesa(data_despesa, despesa):
     df = pd.DataFrame(data_despesa)
 

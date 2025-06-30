@@ -68,4 +68,6 @@ def bar_chart(data):
 def display_desp(data):
     df = pd.DataFrame(data)
     valor = df["Valor"].sum()
+    valor = round(valor, 2)
+
     return f"R$ {valor}"

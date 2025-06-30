@@ -1,7 +1,7 @@
 Valor,Efetuado,Fixo,Data,Categoria,Descrição
-1600.0,1,0,2025-03-07,Salário,Salario Fevereiro
-1600.0,1,0,2025-04-07,Salário,Salario Março
-1600.0,1,0,2025-05-07,Salário,Salario Abril
-1600.0,1,0,2025-06-06,Salário,Salario Maio
-1600.0,1,0,2025-07-07,Salário,Salario Junho
-400.0,1,0,2025-06-29,Investimentos,Dividendos Junho
+3200.0,1,1,2025-06-05,Salário,Salário Mensal
+180.75,1,0,2025-06-10,Investimentos,Rendimento CDB
+450.0,0,0,2025-06-15,Comissão,Bonus por Vendas
+230.9,1,0,2025-06-25,Investimentos,Dividendos Ações
+800.0,1,0,2025-06-28,Comissão,Freelance Dev
+400.0,1,0,2025-06-18,Empreendimento,Venda de infoproduto
