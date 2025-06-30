@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import calendar
 from globals import *
 from app import app
+import pdb
 
 card_icon = {
     "color": "white",
@@ -185,3 +186,78 @@ def update_output(data_receita, data_despesa, receita, despesa):
     fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     return fig
 
+@app.callback(
+    Output('graph2', 'figure'),
+    [Input('store-receitas', 'data'),
+     Input('store-despesas', 'data'),
+     Input('dropdown-receita', 'value'),
+     Input('dropdown-despesa', 'value'),
+     Input('date-picker-config', 'start_date'),
+     Input('date-picker-config', 'end_date'), ]
+)
+def graph2_show(data_receita, data_despesa, receita, despesa, start_date, end_date):
+    df_ds = pd.DataFrame(data_despesa)
+    df_rc = pd.DataFrame(data_receita)
+
+    df_ds["Output"] = "Despesas"
+    df_rc["Output"] = "Receitas"
+    df_final = pd.concat([df_ds, df_rc])
+    df_final["Data"] = pd.to_datetime(df_final["Data"])
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    df_final = df_final[(df_final["Data"] >= start_date) & (df_final["Data"] <= end_date)]
+    df_final = df_final[(df_final["Categoria"].isin(receita)) | (df_final["Categoria"].isin(despesa))]
+
+    fig = px.bar(df_final, x="Data", y="Valor", color="Output", barmode="group")
+
+    fig.update_layout(margin=graph_margin,height=400)
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+    return fig
+
+@app.callback(
+    Output('graph3', "figure"),
+    [Input('store-receitas', 'data'),
+     Input('dropdown-receita', 'value')]
+)
+def pie_receita(data_receita, receita):
+    df = pd.DataFrame(data_receita)
+
+    if df.empty or 'Categoria' not in df.columns:
+        # Retorna gráfico vazio ou placeholder
+        fig = px.pie(values=[1], names=["Sem dados"])
+        fig.update_layout(title={'text': 'Receitas'})
+        return fig
+
+    df = df[df['Categoria'].isin(receita)]
+
+    fig = px.pie(df, values='Valor', names='Categoria', hole=0.4)
+    fig.update_layout(title={'text': 'Receitas'})
+    fig.update_layout(margin=graph_margin, height=400)
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+
+    return fig
+
+@app.callback(
+    Output('graph4', 'figure'),
+    [Input('store-despesas', 'data'),
+     Input('dropdown-despesa', 'value')]
+)
+def pie_despesa(data_despesa, despesa):
+    df = pd.DataFrame(data_despesa)
+
+    if df.empty or 'Categoria' not in df.columns:
+        fig = px.pie(values=[1], names=["Sem dados"])
+        fig.update_layout(title={'text': 'Despesas'})
+        fig.update_layout(margin=graph_margin, height=400)
+        fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        return fig
+
+    df = df[df['Categoria'].isin(despesa)]
+
+    fig = px.pie(df, values='Valor', names='Categoria', hole=0.4)
+    fig.update_layout(title={'text': 'Despesas'})
+    fig.update_layout(margin=graph_margin, height=400)
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+
+    return fig
