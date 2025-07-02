@@ -7,7 +7,7 @@ import plotly.express as px
 
 from app import *
 from components import sidebar, dashboards, extratos
-from globals import *
+from globals import  df_receitas, df_despesas, df_cat_receita, df_cat_despesa
 
 
 # =========  Layout  =========== #
