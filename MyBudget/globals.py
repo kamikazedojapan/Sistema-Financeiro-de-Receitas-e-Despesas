@@ -1,6 +1,14 @@
 import pandas as pd
 import os
 
+# Declarando variáveis globais para evitar erro de escopo no VSCode
+df_receitas = None
+df_despesas = None
+df_cat_receita = None
+df_cat_despesa = None
+cat_receita = []
+cat_despesa = []
+
 # Carrega ou cria os DataFrames de despesas e receitas
 if ("df_despesas.csv" in os.listdir()) and ("df_receitas.csv" in os.listdir()):
     df_receitas = pd.read_csv("df_receitas.csv", parse_dates=['Data'])
