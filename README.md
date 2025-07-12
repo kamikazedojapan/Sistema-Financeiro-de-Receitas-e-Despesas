@@ -14,7 +14,6 @@ Aplicação web desenvolvida com **Python e Dash** para gerenciamento financeiro
 - 📈 **Gráficos interativos** de entradas e saídas (Plotly)
 - 💾 Armazenamento em **arquivos `.json` locais**
 - 💡 Interface responsiva com navegação entre páginas
-- 🌓 Suporte a **modo claro e escuro**
 
 ---
 
