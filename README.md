@@ -40,7 +40,7 @@ pip install -r requirements.txt
 ```
 Se não existir requirements.txt, instale manualmente:
 ```bash
-pip install dash pandas
+pip install dash dash-core-components dash-html-components dash-bootstrap-components plotly pandas
 ```
 ### 4. Execute o sistema:
 
