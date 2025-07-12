@@ -1,6 +1,6 @@
 # 💰 Sistema Financeiro de Receitas e Despesas
 
-Aplicação web desenvolvida com **Python, Dash, Plotly e pandas** para gerenciamento financeiro pessoal. Permite registrar receitas e despesas, visualizar gráficos interativos e acompanhar o saldo mensal com facilidade.
+Aplicação web desenvolvida com **Python, Dash, Plotly e Pandas** para gerenciamento financeiro pessoal. Permite registrar receitas e despesas, visualizar gráficos interativos e acompanhar o saldo mensal com facilidade.
 
 ---
 ## Dashboard e Pagina de Extratos
