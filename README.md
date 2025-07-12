@@ -41,7 +41,7 @@ pip install dash dash-core-components dash-html-components dash-bootstrap-compon
 ### 4. Execute o sistema:
 
 ```bash
-python app.py
+python index.py
 ```
 
 ## 📁Estrutura do Projeto
