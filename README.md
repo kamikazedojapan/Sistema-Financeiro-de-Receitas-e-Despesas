@@ -38,9 +38,10 @@ venv\Scripts\activate     # Windows
 ```bash
 pip install dash dash-core-components dash-html-components dash-bootstrap-components plotly pandas
 ```
-### 4. Execute o sistema:
+### 4. Dentro da pasta MyBudget, execute o sistema:
 
 ```bash
+cd MyBudget
 python index.py
 ```
 
