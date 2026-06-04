@@ -101,8 +101,8 @@ layout = dbc.Container([
 
                         dbc.Col([
                             html.Label('Categoria da receita'),
-                            dbc.Select(id='select_receita', 
-                                       options=[{'label': i, 'value': i} for i in cat_receita], 
+                            dbc.Select(id='select_receita',
+                                       options=[{'label': i, 'value': i} for i in cat_receita],
                                        value=cat_receita[0])
                         ], width=4)
                     ], style={'margin-top': '25px'}),
@@ -189,7 +189,7 @@ layout = dbc.Container([
                         dbc.Col([
                             html.Label('Categoria da despesa'),
                             dbc.Select(id='select_despesa',
-                                       options=[{'label': i, 'value': i} for i in cat_despesa], 
+                                       options=[{'label': i, 'value': i} for i in cat_despesa],
                                        value=cat_despesa[0])
                         ], width=4)
                     ], style={'margin-top': '25px'}),
@@ -290,14 +290,25 @@ def toggle_modal_despesa(n1, is_open):
     ]
 )
 def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_receitas):
-    df_receitas = pd.DataFrame(dict_receitas)
+
+    if dict_receitas:
+        df_receitas = pd.DataFrame(dict_receitas)
+    else:
+        df_receitas = pd.DataFrame(
+            columns=[
+                "Valor",
+                "Efetuado",
+                "Fixo",
+                "Data",
+                "Categoria",
+                "Descrição"
+            ]
+        )
 
     if n and not (valor == "" or valor is None):
-        print("DEBUG:", descricao, valor, date, switches, categoria)  # <-- Adicione isso para depurar
 
         valor = round(float(valor), 2)
 
-        # Verificação da data
         if date is None:
             date = datetime.today().date()
         else:
@@ -318,12 +329,32 @@ def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_rece
             "Descrição": descricao or "Sem descrição"
         }
 
-        df_receitas = pd.concat([df_receitas, pd.DataFrame([nova_linha])], ignore_index=True)
-        df_receitas = df_receitas[["Valor", "Efetuado", "Fixo", "Data", "Categoria", "Descrição"]]
-        df_receitas.to_csv("df_receitas.csv", index=False)
+        df_receitas = pd.concat(
+            [df_receitas, pd.DataFrame([nova_linha])],
+            ignore_index=True
+        )
 
-    return df_receitas.to_dict()
-    
+        df_receitas = df_receitas[
+            [
+                "Valor",
+                "Efetuado",
+                "Fixo",
+                "Data",
+                "Categoria",
+                "Descrição"
+            ]
+        ]
+
+        df_receitas.to_csv(
+            "df_receitas.csv",
+            index=False,
+            encoding="utf-8-sig"
+        )
+
+        print("\nCSV SALVO COM SUCESSO")
+
+    return df_receitas.to_dict("records")
+
 @app.callback(
      Output('store-despesas', 'data'),
      Input('salvar_despesa', 'n_clicks'),
@@ -337,7 +368,20 @@ def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_rece
     ]
 )
 def salve_form_despesa(n, descricao, valor, date, switches, categoria, dict_despesas):
-    df_despesas = pd.DataFrame(dict_despesas)
+
+    if dict_despesas:
+        df_despesas = pd.DataFrame(dict_despesas)
+    else:
+        df_despesas = pd.DataFrame(
+            columns=[
+                "Valor",
+                "Efetuado",
+                "Fixo",
+                "Data",
+                "Categoria",
+                "Descrição"
+            ]
+        )
 
     if n and not (valor == "" or valor is None):
         print("DEBUG:", descricao, valor, date, switches, categoria)  # <-- Adicione isso para depurar
@@ -367,9 +411,9 @@ def salve_form_despesa(n, descricao, valor, date, switches, categoria, dict_desp
 
         df_despesas = pd.concat([df_despesas, pd.DataFrame([nova_linha])], ignore_index=True)
         df_despesas = df_despesas[["Valor", "Efetuado", "Fixo", "Data", "Categoria", "Descrição"]]
-        df_despesas.to_csv("df_despesas.csv", index=False)
+        df_despesas.to_csv("df_despesas.csv", index=False, encoding="utf-8-sig")
 
-    return df_despesas.to_dict()
+    return df_despesas.to_dict("records")
 
 @app.callback(
     [Output("select_receita", "options"),
@@ -393,7 +437,7 @@ def update_categoria_receita(n_add, n_remove, nova_categoria, categorias_remover
 
     opcoes = [{"label": i, "value": i} for i in cat_receita]
     df_cat_receita = pd.DataFrame(cat_receita, columns=["Categoria"])
-    df_cat_receita.to_csv("df_cat_receita.csv", index=False)
+    df_cat_receita.to_csv("df_cat_receitas.csv", index=False, encoding="utf-8-sig")
     return opcoes, opcoes, [], df_cat_receita.to_dict()
 
 @app.callback(
@@ -418,6 +462,6 @@ def update_categoria_despesa(n_add, n_remove, nova_categoria, categorias_remover
 
     opcoes = [{"label": i, "value": i} for i in cat_despesa]
     df_cat_despesa = pd.DataFrame(cat_despesa, columns=["Categoria"])
-    df_cat_despesa.to_csv("df_cat_despesa.csv", index=False)
+    df_cat_despesa.to_csv("df_cat_despesas.csv", index=False, encoding="utf-8-sig")
     return opcoes, opcoes, [], df_cat_despesa.to_dict()
 

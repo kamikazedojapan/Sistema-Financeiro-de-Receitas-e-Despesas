@@ -1,60 +1,46 @@
+from pathlib import Path
 import pandas as pd
-import os
+
+BASE_DIR = Path(__file__).resolve().parent
+
+ARQ_RECEITAS = BASE_DIR / 'df_receitas.csv'
+ARQ_DESPESAS = BASE_DIR / 'df_despesas.csv'
+ARQ_CAT_RECEITAS = BASE_DIR / 'df_cat_receitas.csv'
+ARQ_CAT_DESPESAS = BASE_DIR / 'df_cat_despesas.csv'
+
+CATEGORIAS_RECEITAS = ['Salário', 'Investimento']
+CATEGORIAS_DESPESAS = [
+    'alimentação','energia','internet','saúde','transporte',
+    'estudo','lazer','quarto','tatuagens','perfurmes',
+    'acessorios','desejos','jogos'
+]
+
+COLUNAS = ['Valor','Efetuado','Fixo','Data','Categoria','Descrição']
+
+def _criar_movimentacoes(caminho):
+    df = pd.DataFrame(columns=COLUNAS)
+    df.to_csv(caminho, index=False, encoding='utf-8-sig')
+    return df
+
+
+def _criar_categorias(caminho, categorias):
+    df = pd.DataFrame({'Categoria': categorias})
+    df.to_csv(caminho, index=False, encoding='utf-8-sig')
+    return df
+
 
 def carregar_dados():
     global df_receitas, df_despesas, df_cat_receita, df_cat_despesa, cat_receita, cat_despesa
 
-    # Declarando variáveis globais para evitar erro de escopo no VSCode
-    df_receitas = None
-    df_despesas = None
-    df_cat_receita = None
-    df_cat_despesa = None
-    cat_receita = []
-    cat_despesa = []
+    df_receitas = pd.read_csv(ARQ_RECEITAS, encoding='utf-8-sig') if ARQ_RECEITAS.exists() else _criar_movimentacoes(ARQ_RECEITAS)
+    df_despesas = pd.read_csv(ARQ_DESPESAS, encoding='utf-8-sig') if ARQ_DESPESAS.exists() else _criar_movimentacoes(ARQ_DESPESAS)
 
-    # Carrega ou cria os DataFrames de despesas e receitas
-    if ("df_despesas.csv" in os.listdir()) and ("df_receitas.csv" in os.listdir()):
-        df_receitas = pd.read_csv("df_receitas.csv", parse_dates=['Data'])
-        df_despesas = pd.read_csv("df_despesas.csv", parse_dates=['Data'])
-        df_receitas["Data"] = df_receitas["Data"].apply(lambda x: x.date())
-        df_despesas["Data"] = df_despesas["Data"].apply(lambda x: x.date())
-        
-        # Remover a coluna 'Unnamed: 0' se existir (índice salvo incorretamente)
-        if 'Unnamed: 0' in df_receitas.columns:
-            df_receitas = df_receitas.drop('Unnamed: 0', axis=1)
-        if 'Unnamed: 0' in df_despesas.columns:
-            df_despesas = df_despesas.drop('Unnamed: 0', axis=1)
-            
-    else:
-        # CORREÇÃO: Estrutura de dados na ordem correta: Valor, Efetuado, Fixo, Data, Categoria, Descrição
-        data_structure = {
-            'Valor': [],
-            'Efetuado': [],  # Renomeado de 'Recebido' para 'Efetuado'
-            'Fixo': [],
-            'Data': [],
-            'Categoria': [],
-            'Descrição': []
-        }
-        df_receitas = pd.DataFrame(data_structure)
-        df_despesas = pd.DataFrame(data_structure)
-        df_receitas.to_csv("df_receitas.csv", index=False)
-        df_despesas.to_csv("df_despesas.csv", index=False)
+    df_cat_receita = _criar_categorias(ARQ_CAT_RECEITAS, CATEGORIAS_RECEITAS)
+    df_cat_despesa = _criar_categorias(ARQ_CAT_DESPESAS, CATEGORIAS_DESPESAS)
 
-    # Carrega ou cria os DataFrames de categorias
-    if ("df_cat_receitas.csv" in os.listdir()) and ("df_cat_despesas.csv" in os.listdir()):
-        df_cat_receita = pd.read_csv("df_cat_receitas.csv", index_col=0)
-        df_cat_despesa = pd.read_csv("df_cat_despesas.csv", index_col=0)
-        cat_receita = df_cat_receita.values.tolist()
-        cat_despesa = df_cat_despesa.values.tolist()
-    else:
-        # Categorias padrão
-        cat_receita = ["Salário", "Investimentos", "Comissão"]
-        cat_despesa = ["Alimentação", "Aluguel", "Gasolina", "Saúde", "Lazer"]
-        
-        # Cria DataFrames das categorias
-        df_cat_receita = pd.DataFrame({'Categoria': cat_receita})
-        df_cat_despesa = pd.DataFrame({'Categoria': cat_despesa})
-        
-        # Salva os arquivos CSV
-        df_cat_receita.to_csv("df_cat_receita.csv")
-        df_cat_despesa.to_csv("df_cat_despesas.csv")
+    cat_receita = CATEGORIAS_RECEITAS.copy()
+    cat_despesa = CATEGORIAS_DESPESAS.copy()
+
+    return df_receitas, df_despesas
+
+carregar_dados()

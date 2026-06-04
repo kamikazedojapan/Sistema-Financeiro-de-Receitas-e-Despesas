@@ -1,7 +1,18 @@
-Valor,Efetuado,Fixo,Data,Categoria,Descrição
-480.3,1,0,2025-06-07,Alimentação,Supermercado
-200.0,0,0,2025-06-11,Gasolina,Combustivel
-99.9,1,1,2025-06-12,Saúde,Academia
-75.0,1,0,2025-06-20,Lazer,Cinema e Lazer
-1000.0,1,0,2025-06-16,Roupas,Roupas
-200.0,1,0,2025-06-16,Internet,Internet
+﻿Valor,Efetuado,Fixo,Data,Categoria,Descrição
+6.33,1,0,2026-05-29,Transporte,Uber
+89.0,1,0,2026-05-31,Acessórios,Fone Lenovo Bluetooth sem fio
+188.98,1,0,2026-05-31,Quarto,Mesa Setup
+65.0,1,0,2026-05-31,Cuidados Pessoais,Corte de cabelo + pomada 
+138.98,1,0,2026-06-01,Acessórios,Fone de ouvido bluetooth e Cabo USB
+2.0,1,0,2026-06-01,Desejos,Cigas
+18.0,1,0,2026-06-01,Alimentação,Almoço
+223.5,1,1,2026-06-01,Transporte,Passagem do Metrô - Junho
+7.13,1,0,2026-06-02,Transporte,Uber
+2.5,1,0,2026-06-02,Alimentação,Café
+4.0,1,0,2026-06-02,Desejos,Cigas
+10.0,1,0,2026-06-02,Alimentação,Pão de queijo
+1.63,1,0,2026-06-02,Desejos,Cigas
+50.0,1,0,2026-06-03,acessorios,Capa + Película + Carregador do fone
+51.0,1,0,2026-06-03,alimentação,Almoço
+2.0,1,0,2026-06-03,alimentação,Cigas
+5.0,1,0,2026-06-03,transporte,Uber perdido

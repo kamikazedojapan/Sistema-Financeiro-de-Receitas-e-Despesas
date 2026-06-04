@@ -102,6 +102,38 @@ layout = dbc.Col([
                         updatemode='singledate',
                         id='date-picker-config',
                         style={'z-index': 100}),
+
+                    html.Legend("Analise Mensal", style={"margin-top": "15px"}),
+                    html.Label("Mês"),
+                    dcc.Dropdown(
+                        id="dropdown-mes",
+                        options=[
+                            {"label": "Janeiro", "value": 1},
+                            {"label": "Fevereiro", "value": 2},
+                            {"label": "Março", "value": 3},
+                            {"label": "Abril", "value": 4},
+                            {"label": "Maio", "value": 5},
+                            {"label": "Junho", "value": 6},
+                            {"label": "Julho", "value": 7},
+                            {"label": "Agosto", "value": 8},
+                            {"label": "Setembro", "value": 9},
+                            {"label": "Outubro", "value": 10},
+                            {"label": "Novembro", "value": 11},
+                            {"label": "Dezembro", "value": 12},
+                        ],
+                        value=datetime.now().month,
+                        clearable=False
+                    ),
+                    html.Label("Ano", style={"margin-top": "10px"}),
+                    dcc.Dropdown(
+                        id="dropdown-ano",
+                        options=[
+                            {"label": str(ano), "value": ano}
+                            for ano in range(2020, datetime.now().year + 1)
+                        ],
+                        value=datetime.now().year,
+                        clearable=False
+                    ),
                ], style={'height': '100%', 'padding': '20px'})
            ], width=4),
 
@@ -114,10 +146,9 @@ layout = dbc.Col([
            dbc.Col(dbc.Card(dcc.Graph(id='graph2'), style={'padding': '10px'}), width=6),
            dbc.Col(dbc.Card(dcc.Graph(id='graph3'), style={'padding': '10px'}), width=3),
            dbc.Col(dbc.Card(dcc.Graph(id='graph4'), style={'padding': '10px'}), width=3),
-       ])
+           dbc.Col(dbc.Card(dcc.Graph(id='graph5'), style={'padding': '10px'}), width=12)
+       ], style={"margin": "10px"})
     ])
-
-
 
 # =========  Callbacks  =========== #
 @app.callback(
@@ -140,7 +171,7 @@ def populate_dropdownvalues(data):
     Output("dropdown-despesa", "value"),
     Output("p-despesa-dashboards", "children"),
     Input("store-despesas", "data"))
-    
+
 def populate_dropdownvalues(data):
     df = pd.DataFrame(data)
     valor = df['Valor'].sum()
@@ -173,20 +204,23 @@ def saldo_total(despesas, receitas):
 )
 
 def update_output(data_receita, data_despesa, receita, despesa):
-    
-    df_despesas = pd.DataFrame(data_despesa).set_index("Data")[["Valor"]]
+    df_despesas = pd.DataFrame(data_despesa)
+    df_despesas["Data"] = pd.to_datetime(df_despesas["Data"])
+    df_despesas = df_despesas.set_index("Data")[["Valor"]]
     df_ds = df_despesas.groupby("Data").sum().rename(columns={"Valor": "Despesa"})
-    
-    df_receitas = pd.DataFrame(data_receita).set_index("Data")[["Valor"]]
+
+    df_receitas = pd.DataFrame(data_receita)
+    df_receitas["Data"] = pd.to_datetime(df_receitas["Data"])
+    df_receitas = df_receitas.set_index("Data")[["Valor"]]
     df_rc = df_receitas.groupby("Data").sum().rename(columns={"Valor": "Receita"})
 
     df_acum = df_ds.join(df_rc, how="outer").fillna(0)
     df_acum["Acum"] = df_acum["Receita"] - df_acum["Despesa"]
     df_acum["Acum"] = df_acum["Acum"].cumsum()
-    
+
     fig = go.Figure()
     fig.add_trace(go.Scatter(name="Fluxo de caixa", x=df_acum.index, y=df_acum["Acum"], mode="lines"))
-    
+
     fig.update_layout(margin=graph_margin,height=400)
     fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     return fig
@@ -231,7 +265,6 @@ def pie_receita(data_receita, receita):
     df = pd.DataFrame(data_receita)
 
     if df.empty or 'Categoria' not in df.columns:
-        # Retorna gráfico vazio ou placeholder
         fig = px.pie(values=[1], names=["Sem dados"])
         fig.update_layout(title={'text': 'Receitas'})
         return fig
@@ -267,5 +300,120 @@ def pie_despesa(data_despesa, despesa):
     fig.update_layout(title={'text': 'Despesas'})
     fig.update_layout(margin=graph_margin, height=400)
     fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+
+    return fig
+
+@app.callback(
+    Output("graph5", "figure"),
+    [
+        Input("store-receitas", "data"),
+        Input("store-despesas", "data"),
+        Input("dropdown-mes", "value"),
+        Input("dropdown-ano", "value")
+    ]
+)
+def grafico_saldo_mensal(receitas, despesas, mes, ano):
+
+    df_receitas = pd.DataFrame(receitas)
+    df_despesas = pd.DataFrame(despesas)
+
+    if df_receitas.empty:
+        return px.pie(
+            names=["Sem dados"],
+            values=[1],
+            title="Nenhuma receita cadastrada"
+        )
+
+    df_receitas["Data"] = pd.to_datetime(df_receitas["Data"])
+    df_despesas["Data"] = pd.to_datetime(df_despesas["Data"])
+
+    inicio_mes = pd.Timestamp(
+        year=ano,
+        month=mes,
+        day=1
+    )
+
+    receitas_anteriores = df_receitas[
+        df_receitas["Data"] < inicio_mes
+    ]
+
+    despesas_anteriores = df_despesas[
+        df_despesas["Data"] < inicio_mes
+    ]
+
+    saldo_inicial = (
+        receitas_anteriores["Valor"].sum() - despesas_anteriores["Valor"].sum()
+    )
+
+    receitas_mes = df_receitas[
+        (df_receitas["Data"].dt.month == mes) & (df_receitas["Data"].dt.year == ano)
+    ]
+
+    despesas_mes = df_despesas[
+        (df_despesas["Data"].dt.month == mes) & (df_despesas["Data"].dt.year == ano)
+    ]
+
+    receita_mes = receitas_mes["Valor"].sum()
+    despesa_mes = despesas_mes["Valor"].sum()
+
+    saldo_final = saldo_inicial + receita_mes - despesa_mes
+
+    base_calculo = saldo_inicial + receita_mes
+
+    patrimonio_mes = saldo_inicial + receita_mes
+
+    patrimonio_formatado = (
+        f"{patrimonio_mes:,.2f}"
+        .replace(",", "X")
+        .replace(".", ",")
+        .replace("X", ".")
+    )
+
+    if base_calculo == 0 and despesa_mes == 0:
+        return px.pie(
+            names=["Sem dados"],
+            values=[1],
+            title="Nenhuma receita encontrada"
+        )
+
+    fig = px.pie(
+        names=["Saldo Restante", "Despesas"],
+        values=[max(saldo_final, 0), despesa_mes],
+        hole=0.5
+    )
+
+    fig.update_traces(
+        textposition="inside",
+        textinfo="percent+label"
+    )
+
+    fig.update_layout(
+        title={
+            "text": (
+                f"Distribuição Financeira - {mes:02d}/{ano}"
+                f"<br><sup>Patrimônio do mês: R$ {patrimonio_formatado}</sup>"
+            ),
+            "x": 0.5
+        },
+        margin=graph_margin,
+        height=500,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
+    saldo_formatado = (
+        f"R$ {saldo_final:,.2f}"
+        .replace(",", "X")
+        .replace(".", ",")
+        .replace("X", ".")
+    )
+
+    fig.add_annotation(
+        text=f"<b>{saldo_formatado}</b><br>Saldo Final",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+        font=dict(size=20)
+    )
 
     return fig

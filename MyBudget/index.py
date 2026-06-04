@@ -13,13 +13,12 @@ from globals import  df_receitas, df_despesas, df_cat_receita, df_cat_despesa
 # =========  Layout  =========== #
 content = html.Div(id="page-content")
 
-
 app.layout = dbc.Container(children=[
-    dcc.Store(id='store-receitas', data=df_receitas.to_dict()),
-    dcc.Store(id='store-despesas', data=df_despesas.to_dict()),
+    dcc.Store(id='store-receitas', data=df_receitas.to_dict("records")),
+    dcc.Store(id='store-despesas', data=df_despesas.to_dict("records")),
     dcc.Store(id='stored-cat-receitas', data=df_cat_receita.to_dict()),
     dcc.Store(id='stored-cat-despesas', data=df_cat_despesa.to_dict()),
-    
+
     dbc.Row([
         dbc.Col([
             dcc.Location(id='url'),
@@ -36,11 +35,13 @@ app.layout = dbc.Container(children=[
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def render_page(pathname):
-    if pathname == '/' or pathname =='/dashboards':
+    if pathname == '/':
         return dashboards.layout
-    if pathname == '/' or pathname =='/extratos':
+    elif pathname == '/dashboards':
+        return dashboards.layout
+    elif pathname == '/extratos':
         return extratos.layout
-    
+
 
 
 if __name__ == '__main__':
