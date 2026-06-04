@@ -4,8 +4,11 @@ Aplicação web desenvolvida com **Python, Dash, Plotly e Pandas** para gerencia
 
 ---
 ## Dashboard e Pagina de Extratos
-![image](https://github.com/user-attachments/assets/d42deb0a-5342-474e-b573-96e4d1cc89ac)
-![image](https://github.com/user-attachments/assets/b88ad3ac-a016-4519-8452-76583244ee72)
+<img width="1899" height="926" alt="Captura de tela 2026-06-04 194407" src="https://github.com/user-attachments/assets/9a9d3b7f-f877-4b85-b09d-841c28f33b37" />
+<img width="1898" height="927" alt="Captura de tela 2026-06-04 194651" src="https://github.com/user-attachments/assets/27fe0375-843d-4415-96c3-4ccc3106aaaa" />
+<img width="1919" height="927" alt="image" src="https://github.com/user-attachments/assets/dd01e72c-8051-4b56-87e6-fb6c3461127a" />
+
+
 
 ## 📊 Funcionalidades
 
