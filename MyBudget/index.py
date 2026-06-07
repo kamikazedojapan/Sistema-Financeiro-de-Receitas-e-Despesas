@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.express as px
 
 from app import *
-from components import sidebar, dashboards, extratos
+from components import sidebar, dashboards, extratos, regra_orcamento
 from globals import  df_receitas, df_despesas, df_cat_receita, df_cat_despesa
 
 
@@ -23,10 +23,17 @@ app.layout = dbc.Container(children=[
         dbc.Col([
             dcc.Location(id='url'),
             sidebar.layout
-        ], md=2, style={'background-color': 'white', 'height': '1080px'}),
+        ], xs=12, sm=12, md=3, lg=2, style={
+            'background-color': 'white',
+            'minHeight': '100vh'
+        }),
+
         dbc.Col([
             content
-        ], md=10, style={'background-color': 'white', 'height': '1080px'})
+        ], xs=12, sm=12, md=9, lg=10, style={
+            'background-color': 'white',
+            'minHeight': '100vh'
+        })
     ])
 
 ], fluid=True,)
@@ -41,6 +48,9 @@ def render_page(pathname):
         return dashboards.layout
     elif pathname == '/extratos':
         return extratos.layout
+    elif pathname == '/regra-orcamento':
+        return regra_orcamento.layout
+    return dashboards.layout
 
 
 

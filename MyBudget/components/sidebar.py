@@ -242,6 +242,7 @@ layout = dbc.Container([
                 [
                     dbc.NavLink("Dashboard", href="/dashboards", active="exact"),
                     dbc.NavLink("Extratos", href="/extratos", active="exact"),
+                    dbc.NavLink("Regra 50-30-20", href="/regra-orcamento", active="exact")
                 ],
                 vertical=True,
                 pills=True,

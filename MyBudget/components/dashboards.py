@@ -190,10 +190,12 @@ def saldo_total(despesas, receitas):
     df_despesas = pd.DataFrame(despesas)
     df_receitas = pd.DataFrame(receitas)
 
-    valor = df_receitas['Valor'].sum() - df_despesas['Valor'].sum()
-    valor = round(valor, 2)
+    total_despesas = df_despesas["Valor"].sum() if "Valor" in df_despesas.columns else 0
+    total_receitas = df_receitas["Valor"].sum() if "Valor" in df_receitas.columns else 0
 
-    return f"R$ {valor}"
+    saldo = total_receitas - total_despesas
+
+    return f"R$ {saldo}"
 
 @app.callback(
     Output('graph1', 'figure'),
